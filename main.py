@@ -50,6 +50,7 @@ def code(text):
     with open(file_name, "w") as f:
         f.write(text)
 
+    f.close()
     subprocess.Popen(["code",file_name])
 
 
