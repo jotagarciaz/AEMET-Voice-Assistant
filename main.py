@@ -7,26 +7,34 @@ from urllib import request
 import nltk
 import subprocess 
 import datetime 
+import re
+
 
 def speak(text):
     tts = gTTS(text=text,lang='es')
-    filename = "voice.mp3"
+    filename = "aux.mp3"
     tts.save(filename)
     playsound.playsound(filename)
 
 def get_audio():
+    print("escuchando...")
     r = sr.Recognizer()
     with sr.Microphone() as source:
         audio = r.listen(source)
         said = ""
-
+        print("analizando...")
         try:
             said = r.recognize_google(audio,language='es')
             print(said)
         except Exception as e:
             print("Exception: ", str(e))
-            speak("Perdona no te he entendido.")
+            playsound.playsound("perdona.mp3")
     
+    fname = "aux.mp3"
+    if os.path.isfile(fname): 
+        os.remove(fname)
+    
+    print(said)
     return said
 
 def get_top_temperature():
@@ -54,20 +62,24 @@ def code(text):
     subprocess.Popen(["code",file_name])
 
 
+
+
+
 text = get_audio().lower()
 
 if "hola" in text:
-    speak("hola Quini, ¿Qué tal?")
+    playsound.playsound("saludo.mp3")
 
 elif "cuál es tu nombre" in text:
-    speak("Mi nombre es Rigoberta")
+    playsound.playsound("nombre.mp3")
 
-elif "apunta" or "nota" or "escribe" in text:
+elif re.search("^.*(apunta|nota|escribe).*",text):
     speak("¿Qué quieres que escriba?")
     note = get_audio().lower()
     code(note)
     speak("He creado la nota. ")
+    
 
-elif "temperatura" or "tiempo" in text:
+elif re.search(".*(temperatura|tiempo).*",text):
     temperatura = get_top_temperature()
     speak(temperatura)
