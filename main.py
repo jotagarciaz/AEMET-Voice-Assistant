@@ -60,6 +60,8 @@ def recording_defaults():
 def speak(text,name_file="aux"):
     tts = gTTS(text=text,lang='es')
     tts.save(f"{name_file}.mp3")
+    if name_file == "aux":
+        playsound.playsound("aux.mp3")
 
 def get_audio():
     print(f"{assistant_name} escuchando...")
@@ -107,31 +109,11 @@ def code(text):
 
 
 init()
-text = get_audio()
+#text = get_audio()
 
 """while True:
     text = get_audio()
-    if assistant_name.lower() == text:
-        print("¿Cómo te puedo ayudar?")
-        text = get_audio()
-        if "hola" in text:
-            playsound.playsound("saludo.mp3")
-
-        elif "cuál es tu nombre" in text:
-            playsound.playsound("nombre.mp3")
-
-        elif re.search("^.*(apunta|nota|escribe).*",text):
-            speak(f"{user_name}, ¿Qué quieres que escriba?")
-            note = get_audio().lower()
-            code(note)
-            speak("He creado la nota.")
-        
-        elif re.search(".*(temperatura|tiempo).*",text):
-            temperatura = get_top_temperature()
-            speak(temperatura)"""
-
-
-
+    if assistant_name.lower() == text:"""
 print("¿Cómo te puedo ayudar?")
 text = get_audio()
 if "hola" in text:
@@ -140,12 +122,16 @@ if "hola" in text:
 elif "cuál es tu nombre" in text:
     playsound.playsound("nombre.mp3")
 
-elif re.search("^.*(apunta|nota|escribe).*",text):
+elif re.search("hora",text):
+    speak(f"La hora en la peninsula es la siguiente: {datetime.datetime.now().strftime('%H:%M:%S')}")
+
+elif re.match("^.*(apunta|nota|escribe).*",text):
     speak(f"{user_name}, ¿Qué quieres que escriba?")
     note = get_audio().lower()
     code(note)
     speak("He creado la nota.")
 
-elif re.search(".*(temperatura|tiempo).*",text):
+elif re.match(".*(temperatura|tiempo).*",text):
     temperatura = get_top_temperature()
     speak(temperatura)
+
