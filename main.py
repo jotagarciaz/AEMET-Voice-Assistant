@@ -56,6 +56,7 @@ def recording_defaults():
     speak(f"Mi nombe es {assistant_name}. ", name_file="nombre")
     speak(f"Perdona {user_name}, no te he entendido.", name_file="perdona")
     speak(f"Hola {user_name} ¿Qué tal?", name_file="saludo")
+    speak(f"Hasta pronto.",name_file="fin")
 
 def speak(text,name_file="aux"):
     tts = gTTS(text=text,lang='es')
@@ -65,7 +66,7 @@ def speak(text,name_file="aux"):
 
 def get_audio():
     print(f"{assistant_name} escuchando...")
-    r = sr.Recognizer()
+    
     said = ""
     with sr.Microphone() as source:
         audio = r.listen(source)
@@ -107,31 +108,37 @@ def code(text):
     f.close()
     subprocess.Popen(["code",file_name])
 
-
+r = sr.Recognizer()
+r.energy_threshold = 4000
+r.dynamic_energy_threshold = True
 init()
-#text = get_audio()
 
-"""while True:
+print(f"Di '{assistant_name}' para comenzar")
+while True:
     text = get_audio()
-    if assistant_name.lower() == text:"""
-print("¿Cómo te puedo ayudar?")
-text = get_audio()
-if "hola" in text:
-    playsound.playsound("saludo.mp3")
+    if assistant_name.lower() == text:
+        print("¿Cómo te puedo ayudar?")
+        text = get_audio()
+        if "hola" in text:
+            playsound.playsound("saludo.mp3")
 
-elif "cuál es tu nombre" in text:
-    playsound.playsound("nombre.mp3")
+        elif "cuál es tu nombre" in text:
+            playsound.playsound("nombre.mp3")
 
-elif re.search("hora",text):
-    speak(f"La hora en la peninsula es la siguiente: {datetime.datetime.now().strftime('%H:%M:%S')}")
+        elif re.search("hora",text):
+            speak(f"La hora en la peninsula es la siguiente: {datetime.datetime.now().strftime('%H:%M:%S')}")
 
-elif re.match("^.*(apunta|nota|escribe).*",text):
-    speak(f"{user_name}, ¿Qué quieres que escriba?")
-    note = get_audio().lower()
-    code(note)
-    speak("He creado la nota.")
+        elif re.match("^.*(apunta|nota|escribe).*",text):
+            speak(f"{user_name}, ¿Qué quieres que escriba?")
+            note = get_audio().lower()
+            code(note)
+            speak("He creado la nota.")
 
-elif re.match(".*(temperatura|tiempo).*",text):
-    temperatura = get_top_temperature()
-    speak(temperatura)
+        elif re.match(".*(temperatura|tiempo).*",text):
+            temperatura = get_top_temperature()
+            speak(temperatura)
+        
+        elif re.search("(gracias|fin|eso es todo)",text):
+            playsound.playsound("fin.mp3")
+            break
 
