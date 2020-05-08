@@ -53,24 +53,24 @@ def init():
 
 def recording_defaults():
     print("Grabando las frases más utilizadas.")
-    speak(f"Mi nombe es {assistant_name}. ", name_file="nombre")
-    speak(f"Perdona {user_name}, no te he entendido.", name_file="perdona")
-    speak(f"Hola {user_name} ¿Qué tal?", name_file="saludo")
-    speak(f"Hasta pronto.",name_file="fin")
+    speak(f"My name is {assistant_name}. ", name_file="nombre")
+    speak(f"Sorry {user_name}, I dind't understand it.", name_file="perdona")
+    speak(f"Hello {user_name} How are you?", name_file="saludo")
+    speak(f"Good bye.",name_file="fin")
 
 def speak(text,name_file="aux"):
-    tts = gTTS(text=text,lang='es')
+    tts = gTTS(text=text,lang='en')
     tts.save(f"{name_file}.mp3")
     if name_file == "aux":
         playsound.playsound("aux.mp3")
 
 def get_audio():
-    print(f"{assistant_name} escuchando...")
+    print(f"{assistant_name} hearing...")
     
     said = ""
     with sr.Microphone() as source:
         audio = r.listen(source)
-        print("analizando...")
+        print("analysing...")
         try:
             said = r.recognize_google(audio,language='es')
         except Exception as e:
@@ -97,7 +97,7 @@ def get_top_temperature():
     aux = aux[:aux.find("&nbsp;")]
     aux = aux[1:]
 
-    return "La temperatura máxima para Santander hoy es de "+aux+" grados centigrados."
+    return "The maximum temperature in Santander today it will be "+aux+" graded centigrades."
 
 def code(text):
     date = datetime.datetime.now()
@@ -113,32 +113,32 @@ r.energy_threshold = 4000
 r.dynamic_energy_threshold = True
 init()
 
-print(f"Di '{assistant_name}' para comenzar")
+print(f"Say '{assistant_name}' to start.")
 while True:
     text = get_audio()
     if assistant_name.lower() == text:
-        print("¿Cómo te puedo ayudar?")
+        print("How can I help you?")
         text = get_audio()
-        if "hola" in text:
+        if "hello" in text:
             playsound.playsound("saludo.mp3")
 
-        elif "cuál es tu nombre" in text:
+        elif "what is your name" in text:
             playsound.playsound("nombre.mp3")
 
-        elif re.search("hora",text):
-            speak(f"La hora en la peninsula es la siguiente: {datetime.datetime.now().strftime('%H:%M:%S')}")
+        elif re.search("time",text):
+            speak(f"it is {datetime.datetime.now().strftime('%H:%M:%S')}")
 
-        elif re.match("^.*(apunta|nota|escribe).*",text):
-            speak(f"{user_name}, ¿Qué quieres que escriba?")
+        elif re.match("^.*(text|note|write).*",text):
+            speak(f"{user_name}, what do you want me to write for?")
             note = get_audio().lower()
             code(note)
-            speak("He creado la nota.")
+            speak("I've write the note")
 
-        elif re.match(".*(temperatura|tiempo).*",text):
+        elif re.match(".*(temperature|weather).*",text):
             temperatura = get_top_temperature()
             speak(temperatura)
         
-        elif re.search("(gracias|fin|eso es todo)",text):
+        elif re.search("(thanks|end|that's all|thank you)",text):
             playsound.playsound("fin.mp3")
             break
 
