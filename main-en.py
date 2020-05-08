@@ -97,7 +97,7 @@ def get_top_temperature():
     aux = aux[:aux.find("&nbsp;")]
     aux = aux[1:]
 
-    return "The maximum temperature in Santander today it will be "+aux+" graded centigrades."
+    return "The maximum temperature in Santander today will be "+aux+" degrees Celsius."
 
 def code(text):
     date = datetime.datetime.now()
@@ -129,10 +129,10 @@ while True:
             speak(f"it is {datetime.datetime.now().strftime('%H:%M:%S')}")
 
         elif re.match("^.*(text|note|write).*",text):
-            speak(f"{user_name}, what do you want me to write for?")
+            speak(f"{user_name}, what do you want me to write?")
             note = get_audio().lower()
             code(note)
-            speak("I've write the note")
+            speak("I've writen the note")
 
         elif re.match(".*(temperature|weather).*",text):
             temperatura = get_top_temperature()
